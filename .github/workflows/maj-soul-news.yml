@@ -25,7 +25,8 @@ jobs:
       run: |
         python maj_soul_news.py > news.txt
       
-    - name: Send Feishu notification  
+    - name: Send Feishu notification
+      if: steps.fetch-news.outputs.news != ''  
       run: |
         text=$(cat news.txt)
         curl -X POST -H "Content-Type: application/json" -d '{"msg_type":"text","content":{"text":"'"$text"'"}}' ${{ secrets.FEISHU_WEBHOOK }}
