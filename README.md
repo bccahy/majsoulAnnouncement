@@ -1,6 +1,6 @@
 # majsoulAnnouncement
 
-#Test phase, personal use
+Test phase, personal use
 
 
 Setting Secrets: Navigate to the "Settings" tab of the fork's repository and click "Secrets". Add the following secrets:
