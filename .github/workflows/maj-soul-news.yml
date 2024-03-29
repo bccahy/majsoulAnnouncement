@@ -4,7 +4,6 @@ on:
   schedule:
     - cron: '0 */6 * * *'  # 每6小时运行一次
   workflow_dispatch:    # 允许手动启动
-
 jobs:
   fetch-news:
     runs-on: ubuntu-latest
@@ -27,7 +26,6 @@ jobs:
         python maj_soul_news.py > news.txt
       
     - name: Send Feishu notification  
-      uses: x-dr/feishu-notification-action@master
-      with:
-        url: ${{ secrets.FEISHU_WEBHOOK }}
-        msg: news.txt
+      run: |
+        text=$(cat news.txt)
+        curl -X POST -H "Content-Type: application/json" -d '{"msg_type":"text","content":{"text":"'"$text"'"}}' ${{ secrets.FEISHU_WEBHOOK }}
