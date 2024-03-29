@@ -3,6 +3,7 @@ name: Maj-Soul News
 on:
   schedule:
     - cron: '0 */6 * * *'  # 每6小时运行一次
+  workflow_dispatch:    # 允许手动启动
 
 jobs:
   fetch-news:
