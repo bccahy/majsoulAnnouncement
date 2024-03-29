@@ -3,7 +3,8 @@ name: Maj-Soul News
 on:
   schedule:
     - cron: '0 */6 * * *'  # 每6小时运行一次
-  workflow_dispatch:    # 允许手动启动
+  workflow_dispatch:  # 允许手动触发
+
 jobs:
   fetch-news:
     runs-on: ubuntu-latest
@@ -30,3 +31,16 @@ jobs:
       run: |
         text=$(cat news.txt)
         curl -X POST -H "Content-Type: application/json" -d '{"msg_type":"text","content":{"text":"'"$text"'"}}' ${{ secrets.FEISHU_WEBHOOK }}
+
+    - name: Commit files
+      run: |
+        git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
+        git config --local user.name "${{ secrets.GIT_USER_NAME }}"
+        git add last_news.txt news.txt
+        git commit -m "Update news files" || echo "No changes to commit"
+        
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
