@@ -23,14 +23,15 @@ jobs:
         pip install beautifulsoup4
 
     - name: Fetch latest news
+      id: fetch  # 给这个步骤一个ID
       run: |
-        python maj_soul_news.py > news.txt
+        python maj_soul_news.py
+        echo "::set-output name=news::$(cat news.txt)"  # 将news.txt的内容设置为输出变量
       
     - name: Send Feishu notification
-      if: steps.fetch-news.outputs.news != ''  
+      if: steps.fetch.outputs.news != ''  # 使用上一步的输出变量
       run: |
-        text=$(cat news.txt)
-        curl -X POST -H "Content-Type: application/json" -d '{"msg_type":"text","content":{"text":"'"$text"'"}}' ${{ secrets.FEISHU_WEBHOOK }}
+        curl -X POST -H "Content-Type: application/json" -d '{"msg_type":"text","content":{"text":"'"${{ steps.fetch.outputs.news }}"'"}}' ${{ secrets.FEISHU_WEBHOOK }}
 
     - name: Commit files
       run: |
