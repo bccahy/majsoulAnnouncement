@@ -1,28 +1,32 @@
-name: Monitor Website
+name: Maj-Soul News
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # 每5分钟运行一次
-  workflow_dispatch: 
+    - cron: '0 */6 * * *'  # 每6小时运行一次
 
 jobs:
-  monitor:
+  fetch-news:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
-        
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests beautifulsoup4
-        
-    - name: Run monitoring script
-      run: python monitor.py
-      env:
-        FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+        pip install beautifulsoup4
+
+    - name: Fetch latest news
+      run: |
+        python maj_soul_news.py > news.txt
+      
+    - name: Send Feishu notification  
+      uses: x-dr/feishu-notification-action@master
+      with:
+        url: ${{ secrets.FEISHU_WEBHOOK }}
+        msg: news.txt
