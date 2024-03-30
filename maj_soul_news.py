@@ -20,9 +20,18 @@ try:
         last_news = f.read()
 except FileNotFoundError:
     last_news = ""
-
+    
+if last_news != text_content:
+    # 如果内容不同，更新news.txt
+    with open('news.txt', 'w') as file:
+        file.write(last_news)
+else:
+    # 如果内容相同，确保news.txt为空
+    with open('news.txt', 'w') as file:
+        file.write('')
+        
 # 如果内容不同,则写入文件并输出
 if text_content != last_news:
     with open('last_news.txt', 'w') as f:
         f.write(text_content)
-    print(text_content)
+    
