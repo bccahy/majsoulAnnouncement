@@ -33,6 +33,10 @@ jobs:
       run: |
         curl -X POST -H "Content-Type: application/json" -d '{"msg_type":"text","content":{"text":"'"${{ steps.fetch.outputs.news }}"'"}}' ${{ secrets.FEISHU_WEBHOOK }}
 
+    - name: Clear news.txt
+      run: |
+        > news.txt
+        
     - name: Commit files
       run: |
         git config --local user.email "${{ secrets.GIT_USER_EMAIL }}"
